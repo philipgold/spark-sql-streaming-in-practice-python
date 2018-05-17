@@ -2,13 +2,13 @@
 # Each event contains its serial number embedded in the event value
 # By Alexander Hazan May 13 2018
 
-#from kafka import KafkaProducer
+from kafka import KafkaProducer
 #from kafka.errors import KafkaError
 import numpy as np
 import time,datetime
-#import json
+import json
 
-#producer = KafkaProducer(bootstrap_servers=['devserv1:6667','devserv3:6667'])
+producer = KafkaProducer(bootstrap_servers=['localhost:9092'])
 
 def BuildMessages(noMessages,TimeInterval,Str):
     val = ''.join(["Value" , Str])
@@ -84,5 +84,6 @@ if __name__ == "__main__":
 
                 eventtime = TimeEvent.strftime('%Y-%m-%d %H:%M:%S.%f')
                 event = {"EventName":eventname, "EventTime":eventtime, "Value":str(v)}
+                # event = "EventName" + eventname, "EventTime" + eventtime, "Value"+ str(v)
                 print event
-                #producer.send("Cads", key= k, value = json.dumps(event))  #self.producer.send(self.topic,key=key, value=str(rawMsg))
+                producer.send("Cads", key= k, value = json.dumps(event))  #self.producer.send(self.topic,key=key, value=str(rawMsg))

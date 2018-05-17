@@ -1,19 +1,3 @@
-#
-# Licensed to the Apache Software Foundation (ASF) under one or more
-# contributor license agreements.  See the NOTICE file distributed with
-# this work for additional information regarding copyright ownership.
-# The ASF licenses this file to You under the Apache License, Version 2.0
-# (the "License"); you may not use this file except in compliance with
-# the License.  You may obtain a copy of the License at
-#
-#    http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-#
 
 """
  Consumes messages from one or more topics in Kafka and does wordcount.
@@ -33,12 +17,13 @@
    <topics> Different value format depends on the value of 'subscribe-type'.
 
  Run the example
-    `$ bin/spark-submit examples/src/main/python/sql/streaming/structured_kafka_wordcount.py \
+    `$ bin/spark-submit ex02_kafka_wordcount.py \
     host1:port1,host2:port2 subscribe topic1,topic2`
 """
 from __future__ import print_function
 
-import sys
+import os
+os.environ['PYSPARK_SUBMIT_ARGS'] = '--packages org.apache.spark:spark-sql-kafka-0-10_2.11:2.3.0 pyspark-shell'
 
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import explode
@@ -53,7 +38,14 @@ if __name__ == "__main__":
     spark = SparkSession \
         .builder \
         .appName("StructuredKafkaWordCount") \
+        .config("spark.ui.port", "44040" ) \
         .getOrCreate()
+
+
+    # Disable log info
+    sc = spark.sparkContext
+    sc.setLogLevel("ERROR")
+
 
     # Create DataSet representing the stream of input lines from kafka
     lines = spark \

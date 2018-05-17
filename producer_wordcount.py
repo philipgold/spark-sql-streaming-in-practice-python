@@ -10,5 +10,5 @@ if __name__ == "__main__":
     producer = KafkaProducer(bootstrap_servers=brokers)  # type: KafkaProducer
     # producer.send(KAFKA_TOPIC, {'foo': 'bar'})
 
-    for _ in range(5):
+    for _ in range(100):
         producer.send(topic, value="test")
