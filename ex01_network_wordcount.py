@@ -27,6 +27,7 @@ if __name__ == "__main__":
     spark = SparkSession \
         .builder \
         .appName("StructuredNetworkWordCount") \
+        .config("spark.ui.port", "44040" ) \
         .getOrCreate()
 
     # Create DataFrame representing the stream of input lines from connection to host:port

@@ -1,0 +1,32 @@
+from pyspark.sql import SparkSession, DataFrame
+
+import os
+os.environ['PYSPARK_SUBMIT_ARGS'] = '--packages org.apache.spark:spark-sql-kafka-0-10_2.11:2.3.0 pyspark-shell'
+if __name__ == "__main__":
+
+    bootstrapServers = "localhost:9092"
+    subscribeType = "subscribe"
+    topicName = "wordcount"
+
+    spark = SparkSession \
+        .builder \
+        .appName("test") \
+        .getOrCreate()
+
+    # Elable log info
+    sc = spark.sparkContext
+    sc.setLogLevel("INFO")
+
+
+    lines_df =  spark.readStream.text("/Users/pg/Projects/myprojects/spark-sql-streaming-in-practice-python/data/test/")
+
+
+    lines_df \
+        .writeStream \
+        .format("kafka") \
+        .option("kafka.bootstrap.servers", bootstrapServers) \
+        .option("topic", topicName) \
+        .option("checkpointLocation", "/Users/pg/Projects/myprojects/spark-sql-streaming-in-practice-python/data/temp/") \
+        .start()
+
+    # spark.awaitTermination()
