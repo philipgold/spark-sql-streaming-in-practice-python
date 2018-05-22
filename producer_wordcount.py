@@ -16,7 +16,7 @@ infinitives = ["to make a pie.", "for no apparent reason.", "because the sky is 
 
 
 def sing_sen_maker():
-    '''Makes a random senctence from the different parts of speech. Uses a SINGULAR subject'''
+    '''Makes a random sentence from the different parts of speech. Uses a SINGULAR subject'''
     sen = random.choice(s_nouns), random.choice(s_verbs), random.choice(s_nouns).lower() or random.choice(
         p_nouns).lower(), random.choice(infinitives)
     return ' '.join(sen) # convert tuple to string

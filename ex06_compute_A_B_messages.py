@@ -10,7 +10,7 @@ from datetime import datetime, date, time
 
 import os
 
-from pyspark.sql.functions import from_json, current_timestamp, current_date, udf
+from pyspark.sql.functions import from_json, current_timestamp, current_date, udf, window
 
 from pyspark.sql.types import *
 
@@ -73,10 +73,24 @@ if __name__ == "__main__":
     new_col = my_func(message_data['EventTime'], message_data['KafkaTimestamp'])  # Column instance
     message_data1 = message_data.withColumn("new_col", new_col)
 
+    # Group the data by window and word and compute the count of each group
+    # message_data2 = message_data1 \
+    #     .where("EventName=A")
+
+    # Select the A events
+    # message_data2 = message_data1.select("EventName", "EventTime", "Value", "KafkaTimestamp", "new_col").where("EventName = 'A'")
+
+    # message_data3 = message_data1 \
+    #     .groupBy(window(message_data1.EventTime, "2 seconds", "1 seconds"), message_data1.EventName).count
+
+    # Running count of the number of updates for each device type
+    message_data2 = message_data1.groupBy("EventName").count()
     # Start running the query that prints the running counts to the console
-    query = message_data1 \
-        .writeStream.outputMode("append") \
+    query = message_data2 \
+        .writeStream.outputMode("complete") \
         .format("console") \
         .option("truncate", False) \
         .start()
     query.awaitTermination()
+
+# .trigger(processingTime='1 seconds') \
